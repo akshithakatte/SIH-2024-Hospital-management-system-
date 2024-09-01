@@ -1,0 +1,475 @@
+<!---<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Doctor Appointment</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .appointment-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            animation: slideInDown 1s ease;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0d47a1;
+            font-size: 1rem;
+        }
+
+        select,
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            font-size: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        select:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .time-slot {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        .decorative-circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #0d47a1;
+            opacity: 0.2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decorative-circle-1 {
+            top: -50px;
+            left: -50px;
+        }
+
+        .decorative-circle-2 {
+            bottom: -50px;
+            right: -50px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(20px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="appointment-container">
+        <h1>Book an Appointment</h1>
+
+        <label for="department">Select Department:</label>
+        <select id="department">
+            <option value="">Select a department</option>
+            <option value="Cardiology">Cardiology</option>
+            <option value="Neurology">Neurology</option>
+            <option value="Orthopedics">Orthopedics</option>
+            <option value="Pediatrics">Pediatrics</option>
+            <option value="Dermatology">Dermatology</option>
+        </select>
+
+        <div id="doctorSelect" style="display: none;">
+            <label for="doctor">Select Doctor:</label>
+            <select id="doctor"></select>
+        </div>
+
+        <label for="date">Select Date:</label>
+        <input type="date" id="date">
+
+        <label for="time">Select Time Slot:</label>
+        <select id="time">
+            <option value="">Select a time slot</option>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="01:00 PM">01:00 PM</option>
+            <option value="02:00 PM">02:00 PM</option>
+        </select>
+
+        <button class="btn" onclick="bookAppointment()">Book Appointment</button>
+    </div>
+
+    <div class="decorative-circle decorative-circle-1"></div>
+    <div class="decorative-circle decorative-circle-2"></div>
+
+    <script>
+        const doctors = {
+            "Cardiology": ["Dr. Sarah Connor", "Dr. John Carter"],
+            "Neurology": ["Dr. James Cameron", "Dr. Jane Foster"],
+            "Orthopedics": ["Dr. Steven Strange", "Dr. Bruce Wayne"],
+            "Pediatrics": ["Dr. Peter Parker", "Dr. Clark Kent"],
+            "Dermatology": ["Dr. Diana Prince", "Dr. Barry Allen"]
+        };
+
+        const departmentSelect = document.getElementById("department");
+        const doctorSelect = document.getElementById("doctor");
+        const doctorSelectContainer = document.getElementById("doctorSelect");
+
+        departmentSelect.addEventListener("change", function () {
+            const department = departmentSelect.value;
+
+            if (department) {
+                doctorSelectContainer.style.display = "block";
+                doctorSelect.innerHTML = doctors[department]
+                    .map(doctor => `<option value="${doctor}">${doctor}</option>`)
+                    .join("");
+            } else {
+                doctorSelectContainer.style.display = "none";
+            }
+        });
+
+        function bookAppointment() {
+            const department = departmentSelect.value;
+            const doctor = doctorSelect.value;
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+
+            if (department && doctor && date && time) {
+                const appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+                appointments.push({ department, doctor, date, time });
+                localStorage.setItem("appointments", JSON.stringify(appointments));
+                alert("Appointment booked successfully!");
+                window.location.href = "patient_dashboard.html";
+            } else {
+                alert("Please fill in all fields before booking.");
+            }
+        }
+    </script>
+
+</body>
+
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Doctor Appointment</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .appointment-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            animation: slideInDown 1s ease;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0d47a1;
+            font-size: 1rem;
+        }
+
+        select,
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            font-size: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        select:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .time-slot {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        .decorative-circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #0d47a1;
+            opacity: 0.2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decorative-circle-1 {
+            top: -50px;
+            left: -50px;
+        }
+
+        .decorative-circle-2 {
+            bottom: -50px;
+            right: -50px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(20px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="appointment-container">
+        <h1>Book an Appointment</h1>
+
+        <label for="department">Select Department:</label>
+        <select id="department">
+            <option value="">Select a department</option>
+            <option value="Cardiology">Cardiology</option>
+            <option value="Neurology">Neurology</option>
+            <option value="Orthopedics">Orthopedics</option>
+            <option value="Pediatrics">Pediatrics</option>
+            <option value="Dermatology">Dermatology</option>
+        </select>
+
+        <div id="doctorSelect" style="display: none;">
+            <label for="doctor">Select Doctor:</label>
+            <select id="doctor"></select>
+        </div>
+
+        <label for="date">Select Date:</label>
+        <input type="date" id="date">
+
+        <label for="time">Select Time Slot:</label>
+        <select id="time">
+            <option value="">Select a time slot</option>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="01:00 PM">01:00 PM</option>
+            <option value="02:00 PM">02:00 PM</option>
+        </select>
+
+        <button class="btn" onclick="bookAppointment()">Book Appointment</button>
+    </div>
+
+    <div class="decorative-circle decorative-circle-1"></div>
+    <div class="decorative-circle decorative-circle-2"></div>
+
+    <script>
+        const doctors = {
+            "Cardiology": ["Dr. Sarah Connor", "Dr. John Carter"],
+            "Neurology": ["Dr. James Cameron", "Dr. Jane Foster"],
+            "Orthopedics": ["Dr. Steven Strange", "Dr. Bruce Wayne"],
+            "Pediatrics": ["Dr. Peter Parker", "Dr. Clark Kent"],
+            "Dermatology": ["Dr. Diana Prince", "Dr. Barry Allen"]
+        };
+
+        const departmentSelect = document.getElementById("department");
+        const doctorSelect = document.getElementById("doctor");
+        const doctorSelectContainer = document.getElementById("doctorSelect");
+
+        departmentSelect.addEventListener("change", function () {
+            const department = departmentSelect.value;
+
+            if (department) {
+                doctorSelectContainer.style.display = "block";
+                doctorSelect.innerHTML = doctors[department]
+                    .map(doctor => `<option value="${doctor}">${doctor}</option>`)
+                    .join("");
+            } else {
+                doctorSelectContainer.style.display = "none";
+            }
+        });
+
+        function bookAppointment() {
+            const department = departmentSelect.value;
+            const doctor = doctorSelect.value;
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+
+            if (department && doctor && date && time) {
+                const appointments = JSON.parse(localStorage.getItem("appointments")) || [];
+                appointments.push({ department, doctor, date, time });
+                localStorage.setItem("appointments", JSON.stringify(appointments));
+                alert("Appointment booked successfully!");
+                window.location.href = "patient_dashboard.html";
+            } else {
+                alert("Please fill in all fields before booking.");
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+

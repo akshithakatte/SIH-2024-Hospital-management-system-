@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Lab Tests</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://source.unsplash.com/1920x1080/?hospital,healthcare'); /* Example background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        
+
+        header {
+            background-color: rgba(0, 123, 255, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+      
+    
+    
+        main {
+            padding: 2em;
+            max-width: 1200px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            margin-bottom: 2em;
+        }
+
+        .form-section {
+            margin-bottom: 2em;
+        }
+
+        .form-section h3 {
+            font-size: 1.6em;
+            margin-bottom: 1em;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+
+        .form-group {
+            margin-bottom: 1em;
+        }
+
+        form label {
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.5em;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+            padding-left: 2.5em;
+            border: 1px solid #ccc;
+        }
+
+        form label:hover {
+            background-color: #e9ecef;
+        }
+
+        input[type="checkbox"] {
+            position: absolute;
+            left: 0.5em;
+            top: 50%;
+            width: 1.5em;
+            height: 1.5em;
+            cursor: pointer;
+            appearance: none;
+            background-color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            transform: translateY(-50%);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 0.4em;
+            top: 0.2em;
+            width: 0.4em;
+            height: 0.8em;
+            border: solid white;
+            border-width: 0 0.2em 0.2em 0;
+            transform: rotate(45deg);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+            margin-top: 2em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.75em 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .clear-button {
+            background-color: #dc3545;
+        }
+
+        .clear-button:hover {
+            background-color: #c82333;
+        }
+
+        #resultSection {
+            margin-top: 2em;
+        }
+
+        #resultSection h2 {
+            font-size: 1.6em;
+            color: #007bff;
+        }
+
+        #resultList {
+            list-style-type: none;
+            padding: 0;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #resultList li {
+            background-color: #e9ecef;
+            margin: 0.5em 0;
+            padding: 0.75em;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 2em;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            font-size: 1.4em;
+            color: #007bff;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+
+        .modal-body {
+            margin-bottom: 1em;
+        }
+
+        .modal-body label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1em;
+        }
+
+        .modal-footer button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.7em 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .modal-footer button.close {
+            background-color: #dc3545;
+        }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-footer button.close:hover {
+            background-color: #c82333;
+        }
+
+        /* Booking Form Styles */
+        .booking-form {
+            display: block;
+        }
+
+        .booking-form .form-group {
+            margin-bottom: 1.5em;
+        }
+
+        .booking-form label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .booking-form input[type="text"], .booking-form select {
+            width: 100%;
+            padding: 0.75em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .booking-form .date-container {
+            display: flex;
+            gap: 1em;
+        }
+
+        .booking-form .date-container input {
+            flex: 1;
+        }
+
+        .booking-form button {
+            width: 100%;
+            padding: 0.75em;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .booking-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .booking-form .clear-button {
+            background-color: #dc3545;
+            margin-top: 1em;
+        }
+
+        .booking-form .clear-button:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .form-group {
+                width: 100%;
+            }
+            
+            .booking-form .date-container {
+                flex-direction: column;
+            }
+
+            .booking-form .date-container input {
+                margin-bottom: 1em;
+            }
+
+            
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hospital Lab Tests</h1>
+    </header>
+
+    <main>
+        <section class="form-container">
+            <h2>Select a Scan</h2>
+            <form id="scanForm">
+                <div class="form-section">
+                    <h3>Machine-Based Tests</h3>
+                    <div class="form-group">
+                        <label for="ctScan">
+                            <input type="checkbox" id="ctScan" name="scan" value="CT Scan">
+                            CT Scan
+                        </label>
+
+                        <label for="mriScan">
+                            <input type="checkbox" id="mriScan" name="scan" value="MRI Scan">
+                            MRI Scan
+                        </label>
+
+                        <label for="xrayScan">
+                            <input type="checkbox" id="xrayScan" name="scan" value="X-Ray">
+                            X-Ray
+                        </label>
+
+                        <label for="ultrasoundScan">
+                            <input type="checkbox" id="ultrasoundScan" name="scan" value="Ultrasound">
+                            Ultrasound
+                        </label>
+
+                        <label for="angiographyScan">
+                            <input type="checkbox" id="angiographyScan" name="scan" value="Angiography">
+                            Angiography
+                        </label>
+
+                        <label for="ecgScan">
+                            <input type="checkbox" id="ecgScan" name="scan" value="Electrocardiogram (ECG)">
+                            Electrocardiogram (ECG)
+                        </label>
+
+                        <label for="eegScan">
+                            <input type="checkbox" id="eegScan" name="scan" value="Electroencephalogram (EEG)">
+                            Electroencephalogram (EEG)
+                        </label>
+
+                        <label for="echocardiogramScan">
+                            <input type="checkbox" id="echocardiogramScan" name="scan" value="Echocardiogram">
+                            Echocardiogram
+                        </label>
+
+                        <label for="petScan">
+                            <input type="checkbox" id="petScan" name="scan" value="Positron Emission Tomography (PET) Scan">
+                            Positron Emission Tomography (PET) Scan
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Fluid-Based Tests</h3>
+                    <div class="form-group">
+                        <label for="bloodTests">
+                            <input type="checkbox" id="bloodTests" name="scan" value="Blood Tests">
+                            Blood Tests
+                        </label>
+
+                        <label for="urineTests">
+                            <input type="checkbox" id="urineTests" name="scan" value="Urine Tests">
+                            Urine Tests
+                        </label>
+
+                        <label for="microbiologyTests">
+                            <input type="checkbox" id="microbiologyTests" name="scan" value="Microbiology Tests">
+                            Microbiology Tests
+                        </label>
+
+                        <label for="pathologyHistology">
+                            <input type="checkbox" id="pathologyHistology" name="scan" value="Pathology and Histology">
+                            Pathology and Histology
+                        </label>
+
+                        <label for="immunologySerology">
+                            <input type="checkbox" id="immunologySerology" name="scan" value="Immunology and Serology Tests">
+                            Immunology and Serology Tests
+                        </label>
+
+                        <label for="molecularGenetic">
+                            <input type="checkbox" id="molecularGenetic" name="scan" value="Molecular and Genetic Testing">
+                            Molecular and Genetic Testing
+                        </label>
+
+                        <label for="toxicologyTests">
+                            <input type="checkbox" id="toxicologyTests" name="scan" value="Toxicology Tests">
+                            Toxicology Tests
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button type="button" class="clear-button" onclick="clearSelection()">Clear Options</button>
+                    <button type="button" onclick="submitSelection()">Submit</button>
+                </div>
+            </form>
+        </section>
+        
+        <section id="resultSection" style="display: none;">
+            <h2>Your Selected Scans</h2>
+            <ul id="resultList"></ul>
+        </section>
+    </main>
+
+    <!-- Modal Dialog -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Book an Appointment</div>
+            <div class="modal-body booking-form">
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label for="patientName">Patient Name:</label>
+                        <input type="text" id="patientName" name="patientName" placeholder="Enter patient name">
+                        <div id="patientNameError"  font-size: 0.9em; margin-top: 0.5em;></div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="date">Select Date:</label>
+                        <div class="date-container">
+                            <input type="number" id="day" name="day" placeholder="Day" min="1" max="31">
+        <input type="number" id="month" name="month" placeholder="Month" min="1" max="12">
+        <input type="number" id="year" name="year" placeholder="Year" min="1900" max="2024">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeSlot">Select Time Slot:</label>
+                        <select id="timeSlot" name="timeSlot">
+                            <option value="" disabled selected>Select a time slot</option>
+                            <!-- Time slots from 8am to 6pm -->
+                            <option value="8am-9am">8:00 AM - 9:00 AM</option>
+                            <option value="9am-10am">9:00 AM - 10:00 AM</option>
+                            <option value="10am-11am">10:00 AM - 11:00 AM</option>
+                            <option value="11am-12pm">11:00 AM - 12:00 PM</option>
+                            <option value="12pm-1pm">12:00 PM - 1:00 PM</option>
+                            <option value="1pm-2pm">1:00 PM - 2:00 PM</option>
+                            <option value="2pm-3pm">2:00 PM - 3:00 PM</option>
+                            <option value="3pm-4pm">3:00 PM - 4:00 PM</option>
+                            <option value="4pm-5pm">4:00 PM - 5:00 PM</option>
+                            <option value="5pm-6pm">5:00 PM - 6:00 PM</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" onclick="bookLabTest()">Book Appointment</button>
+                    <button type="button" class="clear-button" onclick="clearBookingForm()">Clear Options</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="close" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       function submitSelection() {
+    const checkboxes = document.querySelectorAll('input[name="scan"]:checked');
+    const resultList = document.getElementById('resultList');
+    const resultSection = document.getElementById('resultSection');
+    const modal = document.getElementById('myModal');
+    
+    // Clear previous results
+    resultList.innerHTML = '';
+
+    // If no scan is selected
+    if (checkboxes.length === 0) {
+        resultSection.style.display = 'none';
+        alert('Please select at least one scan.');
+        return;
+    }
+
+    // Show result section
+    resultSection.style.display = 'block';
+
+    // Append selected scans to the result list
+    checkboxes.forEach(checkbox => {
+        const listItem = document.createElement('li');
+        listItem.textContent = checkbox.value;
+        resultList.appendChild(listItem);
+    });
+
+    // Show the modal
+    modal.style.display = 'flex';
+}
+
+    
+function clearSelection() {
+    // Clear all checkboxes
+    document.querySelectorAll('input[name="scan"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Clear results and hide result section
+    const resultList = document.getElementById('resultList');
+    const resultSection = document.getElementById('resultSection');
+    resultList.innerHTML = '';
+    resultSection.style.display = 'none';
+}
+
+    
+        function clearBookingForm() {
+            document.getElementById('appointmentForm').reset(); // Reset form fields
+        }
+        function bookLabTest() {
+            alert("Lab test booked");}
+        // Handle form submission within modal
+        document.getElementById('appointmentForm').onsubmit = function(event) {
+    event.preventDefault();
+    const patientName = document.getElementById('patientName').value;
+    const day = document.getElementById('day').value;
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (patientName && day && month && year && timeSlot) {
+        // Create an appointment object
+        const appointment = {
+            patientName: patientName,
+            date: `${month}/${day}/${year}`,
+            timeSlot: timeSlot
+        };
+
+        // Get existing appointments from localStorage
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+        // Append new appointment to existing appointments
+        appointments.push(appointment);
+        // Save updated appointments back to localStorage
+        localStorage.setItem('appointments', JSON.stringify(appointments));
+
+        // Notify the user
+        alert(`Appointment booked for ${patientName} on ${month}/${day}/${year} at ${timeSlot}`);
+
+        // Clear the form and selections
+        document.getElementById('myModal').style.display = 'none';
+        clearBookingForm(); // Clear the form fields
+        clearSelection(); // Deselect checkboxes and clear results
+    } else {
+        alert('Please fill in all fields.');
+    }
+};
+function clearBookingForm() {
+    document.getElementById('appointmentForm').reset(); // Reset form fields
+}
+
+
+    
+        // Close modal when clicking outside the modal content
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('myModal')) {
+                document.getElementById('myModal').style.display = 'none';
+            }
+        }
+    
+        // Handle cancel button click
+        document.getElementById('cancelBtn').onclick = function() {
+            document.getElementById('myModal').style.display = 'none';
+            clearBookingForm(); // Clear the form fields when canceling
+        }
+
+        function validateDate(day, month, year) {
+    const date = new Date(year, month - 1, day);
+    return date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year;
+}
+
+document.getElementById('appointmentForm').onsubmit = function(event) {
+    event.preventDefault();
+    const patientName = document.getElementById('patientName').value;
+    const day = parseInt(document.getElementById('day').value, 10);
+    const month = parseInt(document.getElementById('month').value, 10);
+    const year = parseInt(document.getElementById('year').value, 10);
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (patientName && day && month && year && timeSlot) {
+        if (validateDate(day, month, year)) {
+            // Create an appointment object
+            const appointment = {
+                patientName: patientName,
+                date: `${month}/${day}/${year}`,
+                timeSlot: timeSlot
+            };
+
+            // Get existing appointments from localStorage
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            // Append new appointment to existing appointments
+            appointments.push(appointment);
+            // Save updated appointments back to localStorage
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            // Notify the user
+            alert(`Appointment booked for ${patientName} on ${month}/${day}/${year} at ${timeSlot}`);
+
+            // Clear the form and selections
+            document.getElementById('myModal').style.display = 'none';
+            clearBookingForm(); // Clear the form fields
+            clearSelection(); // Deselect checkboxes and clear results
+        } else {
+            alert('Please enter a valid date.');
+        }
+    } else {
+        alert('Please fill in all fields.');
+    }
+};
+
+/*/////////
+*/
+function validateDate(day, month, year) {
+    const date = new Date(year, month - 1, day);
+    return date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year;
+}
+
+function checkDate() {
+    const day = parseInt(document.getElementById('day').value, 10);
+    const month = parseInt(document.getElementById('month').value, 10);
+    const year = parseInt(document.getElementById('year').value, 10);
+    const dateError = document.getElementById('dateError');
+
+    if (day && month && year) {
+        if (validateDate(day, month, year)) {
+            dateError.textContent = '';
+            return true;
+        } else {
+            dateError.textContent = 'Invalid date. Please enter a valid date.';
+            return false;
+        }
+    }
+    dateError.textContent = '';
+    return true;
+}
+
+// Attach the validation function to input events
+document.getElementById('day').addEventListener('input', checkDate);
+document.getElementById('month').addEventListener('input', checkDate);
+document.getElementById('year').addEventListener('input', checkDate);
+
+document.getElementById('appointmentForm').onsubmit = function(event) {
+    event.preventDefault();
+    const patientName = document.getElementById('patientName').value;
+    const day = parseInt(document.getElementById('day').value, 10);
+    const month = parseInt(document.getElementById('month').value, 10);
+    const year = parseInt(document.getElementById('year').value, 10);
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (patientName && day && month && year && timeSlot) {
+        if (checkDate()) {
+            // Create an appointment object
+            const appointment = {
+                patientName: patientName,
+                date: `${month}/${day}/${year}`,
+                timeSlot: timeSlot
+            };
+
+            // Get existing appointments from localStorage
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            // Append new appointment to existing appointments
+            appointments.push(appointment);
+            // Save updated appointments back to localStorage
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            // Notify the user
+            alert(`Appointment booked for ${patientName} on ${month}/${day}/${year} at ${timeSlot}`);
+
+            // Clear the form and selections
+            document.getElementById('myModal').style.display = 'none';
+            clearBookingForm(); // Clear the form fields
+            clearSelection(); // Deselect checkboxes and clear results
+        } else {
+            alert('Please correct the invalid date.');
+        }
+    } else {
+        alert('Please fill in all fields.');
+    }
+};
+
+function validateName(name) {
+    const namePattern = /^[A-Za-z\s]+$/;
+    return namePattern.test(name);
+}
+
+function checkPatientName() {
+    const patientName = document.getElementById('patientName').value;
+    const patientNameError = document.getElementById('patientNameError');
+
+    if (patientName && validateName(patientName)) {
+        patientNameError.textContent = '';
+        return true;
+    } else {
+        patientNameError.textContent = 'Name should only include alphabets and spaces.';
+        return false;
+    }
+}
+
+// Attach the validation function to the input event
+document.getElementById('patientName').addEventListener('input', checkPatientName);
+
+document.getElementById('appointmentForm').onsubmit = function(event) {
+    event.preventDefault();
+    const patientName = document.getElementById('patientName').value;
+    const day = parseInt(document.getElementById('day').value, 10);
+    const month = parseInt(document.getElementById('month').value, 10);
+    const year = parseInt(document.getElementById('year').value, 10);
+    const timeSlot = document.getElementById('timeSlot').value;
+
+    if (patientName && day && month && year && timeSlot) {
+        if (checkPatientName() && checkDate()) {
+            // Create an appointment object
+            const appointment = {
+                patientName: patientName,
+                date: `${month}/${day}/${year}`,
+                timeSlot: timeSlot
+            };
+
+            // Get existing appointments from localStorage
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            // Append new appointment to existing appointments
+            appointments.push(appointment);
+            // Save updated appointments back to localStorage
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            // Notify the user
+            alert(`Appointment booked for ${patientName} on ${month}/${day}/${year} at ${timeSlot}`);
+
+            // Clear the form and selections
+            document.getElementById('myModal').style.display = 'none';
+            clearBookingForm(); // Clear the form fields
+            clearSelection(); // Deselect checkboxes and clear results
+        } else {
+            alert('Please correct the invalid details.');
+        }
+    } else {
+        alert('Please fill in all fields.');
+    }
+};
+
+
+
+
+
+
+
+    </script>
+    
+</body>
+</html>

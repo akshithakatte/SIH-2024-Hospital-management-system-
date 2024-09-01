@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #007bff, #00aaff);
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2.5em;
+            color: #004d99;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            background-color: #003d80;
+            transform: scale(1.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        th:hover {
+            background-color: #003d80;
+        }
+
+        .category-container {
+            margin-top: 20px;
+        }
+
+        .category-container h2 {
+            font-size: 1.8em;
+            color: #004d99;
+        }
+
+        .category {
+            margin: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .category ul li {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category ul li:last-child {
+            border-bottom: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .action-button:hover {
+            background-color: #003d80;
+            transform: scale(1.05);
+        }
+
+        .edit-mode {
+            background-color: #ffcc00;
+            color: black;
+        }
+
+        .edit-mode:hover {
+            background-color: #e6b800;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Inventory Management Dashboard</h1>
+    
+    <div>
+        <h2>Add New Item</h2>
+        <form id="itemForm">
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category">
+                    <option value="Medicines">Medicines</option>
+                    <option value="Equipment">Equipment</option>
+                    <option value="Supplies">Supplies</option>
+                    <option value="PPE">PPE</option>
+                    <option value="Furniture">Furniture</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="itemName">Item Name:</label>
+                <input type="text" id="itemName" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" required>
+            </div>
+            <button type="button" class="button" onclick="saveItem()">Save Item</button>
+        </form>
+    </div>
+    
+    <div class="category-container">
+        <h2>Saved Inventory</h2>
+        <div id="inventoryList">
+            <!-- Inventory items will be displayed here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let inventory = JSON.parse(localStorage.getItem('inventory')) || {};
+    let isEditMode = false;
+    let currentEditItem = null;
+
+    function saveItem() {
+        const category = document.getElementById('category').value;
+        const itemName = document.getElementById('itemName').value;
+        const quantity = document.getElementById('quantity').value;
+
+        if (!inventory[category]) {
+            inventory[category] = [];
+        }
+
+        if (isEditMode) {
+            inventory[currentEditItem.category][currentEditItem.index].name = itemName;
+            inventory[currentEditItem.category][currentEditItem.index].quantity = quantity;
+            isEditMode = false;
+            currentEditItem = null;
+            document.querySelector('.button').textContent = "Save Item";
+            document.querySelector('.button').classList.remove("edit-mode");
+        } else {
+            const itemIndex = inventory[category].findIndex(item => item.name === itemName);
+
+            if (itemIndex > -1) {
+                inventory[category][itemIndex].quantity = quantity;
+            } else {
+                inventory[category].push({ name: itemName, quantity: quantity });
+            }
+        }
+
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        renderInventory();
+        document.getElementById('itemForm').reset();
+    }
+
+    function renderInventory() {
+        const inventoryList = document.getElementById('inventoryList');
+        inventoryList.innerHTML = '';
+
+        for (const [category, items] of Object.entries(inventory)) {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'category';
+            const categoryHeader = document.createElement('h2');
+            categoryHeader.textContent = category;
+            categoryDiv.appendChild(categoryHeader);
+
+            const itemList = document.createElement('ul');
+            items.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <span>${item.name}: ${item.quantity} units</span>
+                    <div class="action-buttons">
+                        <button class="action-button edit-button" onclick="editItem('${category}', ${index})">Edit</button>
+                        <button class="action-button delete-button" onclick="deleteItem('${category}', ${index})">Delete</button>
+                    </div>
+                `;
+                itemList.appendChild(listItem);
+            });
+            categoryDiv.appendChild(itemList);
+            inventoryList.appendChild(categoryDiv);
+        }
+    }
+
+    function editItem(category, index) {
+        const item = inventory[category][index];
+        document.getElementById('category').value = category;
+        document.getElementById('itemName').value = item.name;
+        document.getElementById('quantity').value = item.quantity;
+
+        isEditMode = true;
+        currentEditItem = { category, index };
+        document.querySelector('.button').textContent = "Update Item";
+        document.querySelector('.button').classList.add("edit-mode");
+    }
+
+    function deleteItem(category, index) {
+        inventory[category].splice(index, 1);
+        if (inventory[category].length === 0) {
+            delete inventory[category];
+        }
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        renderInventory();
+    }
+
+    renderInventory();
+</script>
+
+</body>
+</html>

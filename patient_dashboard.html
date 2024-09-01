@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-blue-900 text-white min-h-screen p-5">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold">PATIENT DASHBOARD</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Dashboard</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">My Appointments</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="patient_online consultation.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Online Consultation</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="patient_doctor_appointment.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Book Appointment</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="billing.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Billing</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Support</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="login.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Log Out</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10">
+            <header class="flex justify-between items-center bg-blue-600 text-white p-4 rounded shadow">
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:underline">Profile</a>
+                    <a href="#" class="hover:underline">Settings</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#"><i class="bell-icon"></i></a>
+                    <a href="#"><i class="mail-icon"></i></a>
+                    <div class="flex items-center space-x-2">
+                        <span>Pavan</span>
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+            </header>
+
+            <section class="mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">Upcoming Appointments</h4>
+                        <p class="text-gray-600">You have 3 upcoming appointments.</p>
+                        <button onclick="showModal('appointmentsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">View Appointments</button>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">Medical Records</h4>
+                        <p class="text-gray-600">Your latest records are ready.</p>
+                        <button onclick="showModal('medicalRecordsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">View Records</button>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">Prescriptions</h4>
+                        <p class="text-gray-600">You have 2 new prescriptions.</p>
+                        <button onclick="showModal('prescriptionsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">View Prescriptions</button>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">Billing</h4>
+                        <p class="text-gray-600">You have 1 unpaid bill.</p>
+                        <button class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">View Billing</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white p-6 rounded shadow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Health Tips</h3>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Drink at least 8 glasses of water daily.</li>
+                            <li>Exercise for 30 minutes a day.</li>
+                            <li>Get at least 7 hours of sleep.</li>
+                            <li>Maintain a balanced diet.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Appointments Modal -->
+    <div id="appointmentsModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Upcoming Appointments</h3>
+            <ul class="list-disc list-inside text-gray-600">
+                <li>Appointment 1: September 5, 2024 - 10:00 AM</li>
+                <li>Appointment 2: September 10, 2024 - 2:00 PM</li>
+                <li>Appointment 3: September 15, 2024 - 11:00 AM</li>
+            </ul>
+            <button onclick="closeModal('appointmentsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Close</button>
+        </div>
+    </div>
+
+    <!-- Medical Records Modal -->
+    <div id="medicalRecordsModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Medical Records</h3>
+            <ul class="list-disc list-inside text-gray-600">
+                <li>Record 1: Blood Test - August 25, 2024</li>
+                <li>Record 2: X-Ray - July 15, 2024</li>
+                <li>Record 3: MRI - June 20, 2024</li>
+            </ul>
+            <button onclick="closeModal('medicalRecordsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Close</button>
+        </div>
+    </div>
+
+    <!-- Prescriptions Modal -->
+    <div id="prescriptionsModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/2 lg:w-1/3">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Prescriptions</h3>
+            <p class="text-gray-800"><strong>Symptoms:</strong> Headache, Fever</p>
+            <ul class="list-disc list-inside text-gray-600 mt-4">
+                <li>Medicine 1: Paracetamol - 500mg, Take 1 tablet every 6 hours</li>
+                <li>Medicine 2: Ibuprofen - 200mg, Take 1 tablet every 8 hours</li>
+            </ul>
+            <button onclick="closeModal('prescriptionsModal')" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.getElementById(modalId).classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('flex');
+            document.getElementById(modalId).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

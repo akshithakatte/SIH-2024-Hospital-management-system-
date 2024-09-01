@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Edit Billing Details</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #539acd, #215e9f);
+            color:black;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .billing-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #215e9f;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color:#215e9f;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color:#f3f4f5;
+            color:black;
+            
+        }
+        .total-container {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #215e9f;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #215e9f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color:#215e9f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="billing-container">
+    <h1>Edit Billing Details</h1>
+
+    <label for="name">Patient Name:</label>
+    <input type="text" id="name" placeholder="Enter patient's name">
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" placeholder="Enter patient's age">
+
+    <label for="gender">Gender:</label>
+    <select id="gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <label for="hospital-name">Hospital Name:</label>
+    <input type="text" id="hospital-name" placeholder="Enter hospital name">
+
+    <label for="prescription-fees">Prescription Fees (INR):</label>
+    <input type="number" id="prescription-fees" placeholder="Enter prescription fees" oninput="calculateTotal()">
+
+    <label for="admission-fees">Admission Fees (INR):</label>
+    <input type="number" id="admission-fees" placeholder="Enter admission fees" oninput="calculateTotal()">
+
+    <label for="consultation-fees">Consultation Fees (INR):</label>
+    <input type="number" id="consultation-fees" placeholder="Enter consultation fees" oninput="calculateTotal()">
+
+    <div class="total-container">
+        Total: <span id="total-fees">0 INR</span>
+    </div>
+
+    <button class="btn" onclick="saveBillingDetails()">Save Billing Details</button>
+</div>
+
+<script>
+    function calculateTotal() {
+        const prescriptionFees = parseFloat(document.getElementById('prescription-fees').value) || 0;
+        const admissionFees = parseFloat(document.getElementById('admission-fees').value) || 0;
+        const consultationFees = parseFloat(document.getElementById('consultation-fees').value) || 0;
+
+        const total = prescriptionFees + admissionFees + consultationFees;
+        document.getElementById('total-fees').textContent = total + " INR";
+    }
+
+    function saveBillingDetails() {
+        const name = document.getElementById('name').value;
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const hospitalName = document.getElementById('hospital-name').value;
+        const prescriptionFees = parseFloat(document.getElementById('prescription-fees').value) || 0;
+        const admissionFees = parseFloat(document.getElementById('admission-fees').value) || 0;
+        const consultationFees = parseFloat(document.getElementById('consultation-fees').value) || 0;
+
+        const total = prescriptionFees + admissionFees + consultationFees;
+
+        // Add your logic here to save the details in the database
+        alert("Billing details updated successfully!\nTotal Fees: " + total + " INR");
+    }
+</script>
+
+</body>
+</html>

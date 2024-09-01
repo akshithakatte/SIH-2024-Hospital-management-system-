@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #1a73e8;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .doctor-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .doctor-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .doctor-info h3 {
+            margin: 10px 0;
+            font-size: 1.5em;
+            color: #1a73e8;
+        }
+
+        .doctor-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .rating {
+            margin-top: 10px;
+            font-size: 1.5em;
+            color: #ffd700;
+        }
+
+        .star {
+            font-size: 1.5em;
+            color: #ddd;
+            position: relative;
+            display: inline-block;
+        }
+
+        .star.filled {
+            color: #ffd700;
+        }
+
+        .star.partial:before {
+            content: '★';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #ffd700;
+        }
+
+        .rating-value {
+            font-size: 1em;
+            color: #666;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Doctors List</h2>
+    </div>
+
+    <div class="doctor-list" id="doctorList"></div>
+
+    <script>
+        const doctors = [
+            { name: "Dr. Smith Wright", specialty: "Clinical Doctor", rating: 4.8 },
+            { name: "Dr. Jane Doe", specialty: "Cardiologist", rating: 5.0 },
+            { name: "Dr. John Smith", specialty: "Neurologist", rating: 4.6 },
+            { name: "Dr. Lisa Ray", specialty: "Dermatologist", rating: 3.8 },
+            { name: "Dr. Michael Brown", specialty: "Orthopedic Surgeon", rating: 4.0 },
+            { name: "Dr. Sarah Taylor", specialty: "Pediatrician", rating: 4.9 },
+            { name: "Dr. David Clark", specialty: "Oncologist", rating: 4.7 },
+            { name: "Dr. Emily Davis", specialty: "Gynecologist", rating: 4.2 },
+            { name: "Dr. Robert Lee", specialty: "Ophthalmologist", rating: 4.5 },
+            { name: "Dr. Laura Johnson", specialty: "Psychiatrist", rating: 4.1 },
+            { name: "Dr. Richard Wilson", specialty: "ENT Specialist", rating: 4.9 },
+            { name: "Dr. Karen White", specialty: "Endocrinologist", rating: 3.9 },
+            { name: "Dr. James King", specialty: "Urologist", rating: 4.7 },
+            { name: "Dr. Susan Martin", specialty: "Rheumatologist", rating: 4.3 },
+            { name: "Dr. Charles Allen", specialty: "Nephrologist", rating: 4.4 },
+            { name: "Dr. Jessica Lewis", specialty: "Gastroenterologist", rating: 4.6 },
+            { name: "Dr. Daniel Walker", specialty: "Hematologist", rating: 4.5 },
+            { name: "Dr. Anthony Scott", specialty: "Immunologist", rating: 4.0 },
+            { name: "Dr. Angela Harris", specialty: "Plastic Surgeon", rating: 4.8 },
+            { name: "Dr. Barbara Clark", specialty: "Pulmonologist", rating: 3.7 },
+        ];
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasPartialStar = (rating % 1) >= 0.5;
+            const totalStars = 5;
+
+            let starsHtml = '';
+            for (let i = 1; i <= totalStars; i++) {
+                if (i <= fullStars) {
+                    starsHtml += '<span class="star filled">★</span>';
+                } else if (i === fullStars + 1 && hasPartialStar) {
+                    starsHtml += '<span class="star partial">★</span>';
+                } else {
+                    starsHtml += '<span class="star">★</span>';
+                }
+            }
+            return starsHtml;
+        }
+
+        function generateDoctorCard(doctor) {
+            return `
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <h3>${doctor.name}</h3>
+                        <p>${doctor.specialty}</p>
+                        <div class="rating">
+                            ${generateStars(doctor.rating)}
+                            <span class="rating-value">${doctor.rating.toFixed(1)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('doctorList').innerHTML = doctors.map(generateDoctorCard).join('');
+    </script>
+</body>
+</html>

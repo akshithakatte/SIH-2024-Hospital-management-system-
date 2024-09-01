@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-blue-900 text-white min-h-screen p-5">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold">MEDICAL DASHBOARD</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Dashboard</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="boodbankpatient.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Blood</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="doc_list.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Doctors</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="inventory.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Inventory</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="opd.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">opd</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="patient_doctor_appointment.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Appointments</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="billing.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Billing</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="patient_bed_allotment.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Beds</a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="login.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Logout</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Support</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10">
+            <header class="flex justify-between items-center bg-blue-600 text-white p-4 rounded shadow">
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:underline">Schedule</a>
+                    <a href="#" class="hover:underline">Reports</a>
+                 
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#"><i class="bell-icon"></i></a>
+                    <a href="#"><i class="mail-icon"></i></a>
+                    <div class="flex items-center space-x-2">
+                        <span>Akash</span>
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+            </header>
+
+            <section class="mt-8">
+         
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">200 Bed</h4>
+                        <p class="text-gray-600">Total Hospital Beds</p>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">126 Doctor</h4>
+                        <p class="text-gray-600">Available Doctors</p>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">3,743 Bills</h4>
+                        <p class="text-gray-600">Pharmacy Medics</p>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow text-center">
+                        <h4 class="text-xl font-bold text-blue-600">36 Ambulance</h4>
+                        <p class="text-gray-600">All Ambulance Cars</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white p-6 rounded shadow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Hospital Visits Statistics</h3>
+                        <canvas id="visitChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded shadow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Doctors List</h3>
+                        <div class="flex items-center space-x-4">
+                            <img src="https://via.placeholder.com/50" alt="Doctor" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">Smith Wright</h4>
+                                <p class="text-gray-600">Clinical Doctor</p>
+                                <span class="text-yellow-500">Rating: 4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('visitChart').getContext('2d');
+        const visitChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Visits month',
+                    data: [200, 300, 250, 350, 300, 400],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            background-color: #004494;
+            transform: scale(1.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .action-buttons button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .action-buttons button:hover {
+            background-color: #004494;
+        }
+
+        .edit-button {
+            background-color: #f0ad4e;
+        }
+
+        .edit-button:hover {
+            background-color: #ec971f;
+        }
+
+        .delete-button {
+            background-color: #d9534f;
+        }
+
+        .delete-button:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>OPD Management System</h1>
+    
+    <!-- Form to add or edit patient records -->
+    <form id="patientForm">
+        <input type="hidden" id="patientId">
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" id="patientName" required>
+        </div>
+        <div class="form-group">
+            <label for="patientAge">Age:</label>
+            <input type="number" id="patientAge" required>
+        </div>
+        <div class="form-group">
+            <label for="patientGender">Gender:</label>
+            <select id="patientGender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="patientSymptoms">Symptoms:</label>
+            <input type="text" id="patientSymptoms" required>
+        </div>
+        <button type="button" class="button" onclick="savePatient()">Save Patient</button>
+    </form>
+
+    <!-- Table to display patient records -->
+    <table id="patientTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Symptoms</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Patient records will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let patients = JSON.parse(localStorage.getItem('patients')) || []; // Load patients from local storage
+
+    function savePatient() {
+        const id = document.getElementById('patientId').value;
+        const name = document.getElementById('patientName').value;
+        const age = document.getElementById('patientAge').value;
+        const gender = document.getElementById('patientGender').value;
+        const symptoms = document.getElementById('patientSymptoms').value;
+
+        if (id) {
+            // Edit existing patient
+            patients = patients.map(patient => patient.id === id ? { id, name, age, gender, symptoms } : patient);
+        } else {
+            // Add new patient
+            const newPatient = {
+                id: new Date().getTime().toString(),
+                name,
+                age,
+                gender,
+                symptoms
+            };
+            patients.push(newPatient);
+        }
+
+        // Save patients to local storage
+        localStorage.setItem('patients', JSON.stringify(patients));
+
+        renderTable();
+        document.getElementById('patientForm').reset();
+    }
+
+    function deletePatient(id) {
+        patients = patients.filter(patient => patient.id !== id);
+        localStorage.setItem('patients', JSON.stringify(patients)); // Update local storage
+        renderTable();
+    }
+
+    function editPatient(id) {
+        const patient = patients.find(patient => patient.id === id);
+        if (patient) {
+            document.getElementById('patientId').value = patient.id;
+            document.getElementById('patientName').value = patient.name;
+            document.getElementById('patientAge').value = patient.age;
+            document.getElementById('patientGender').value = patient.gender;
+            document.getElementById('patientSymptoms').value = patient.symptoms;
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('patientTable').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        
+        patients.forEach(patient => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${patient.name}</td>
+                <td>${patient.age}</td>
+                <td>${patient.gender}</td>
+                <td>${patient.symptoms}</td>
+                <td class="action-buttons">
+                    <button class="button edit-button" onclick="editPatient('${patient.id}')">Edit</button>
+                    <button class="button delete-button" onclick="deletePatient('${patient.id}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Initial rendering of the table
+    renderTable();
+</script>
+
+</body>
+</html>

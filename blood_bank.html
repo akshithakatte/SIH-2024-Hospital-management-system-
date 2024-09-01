@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Availability</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #007bff, #00aaff);
+            color: rgb(0, 0, 0);
+            text-align: center;
+            background-image: url("bb.jpg"); /* Path to your image */
+          
+            background-position: center;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2.5em;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .carousel {
+            display: flex;
+            overflow: hidden;
+            justify-content: center;
+            position: relative;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            display: flex;
+            flex-wrap: nowrap;
+            width: 100%;
+        }
+
+        .hospital-card {
+            background: rgba(210, 81, 81, 0.2); /* Transparent background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            padding: 20px;
+            width: calc(100% / 3 - 20px); /* Display 3 cards per slide */
+            box-sizing: border-box;
+            flex: 0 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .hospital-card:hover {
+            transform: scale(1.05);
+        }
+
+        .hospital-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .blood-info {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .blood-info span {
+            display: block;
+            margin: 5px 0;
+        }
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.3);
+            color: rgb(29, 21, 113);
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .carousel-control.prev {
+            left: 10px;
+        }
+
+        .carousel-control.next {
+            right: 10px;
+        }
+
+        .carousel-control:hover {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hospital-card {
+                width: calc(100% / 2 - 20px); /* Adjust for smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hospital-card {
+                width: calc(100% - 20px); /* Full width for very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Blood Bank Availability</h1>
+
+    <div class="carousel">
+        <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+        <div class="carousel-track" id="carousel-track">
+            <!-- Carousel slides will be inserted here by JS -->
+        </div>
+        <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+    </div>
+
+    <script>
+        const hospitals = [
+            {
+                name: "City Hospital",
+                blood: {
+                    A_Pos: 10, A_Neg: 4,
+                    B_Pos: 5, B_Neg: 2,
+                    AB_Pos: 3, AB_Neg: 1,
+                    O_Pos: 8, O_Neg: 3
+                }
+            },
+            {
+                name: "General Hospital",
+                blood: {
+                    A_Pos: 15, A_Neg: 6,
+                    B_Pos: 2, B_Neg: 3,
+                    AB_Pos: 1, AB_Neg: 2,
+                    O_Pos: 10, O_Neg: 4
+                }
+            },
+            {
+                name: "Sunrise Clinic",
+                blood: {
+                    A_Pos: 8, A_Neg: 3,
+                    B_Pos: 7, B_Neg: 1,
+                    AB_Pos: 2, AB_Neg: 1,
+                    O_Pos: 5, O_Neg: 2
+                }
+            },
+            {
+                name: "Downtown Medical Center",
+                blood: {
+                    A_Pos: 12, A_Neg: 5,
+                    B_Pos: 8, B_Neg: 4,
+                    AB_Pos: 3, AB_Neg: 2,
+                    O_Pos: 9, O_Neg: 3
+                }
+            },
+            {
+                name: "Westside Hospital",
+                blood: {
+                    A_Pos: 7, A_Neg: 2,
+                    B_Pos: 10, B_Neg: 3,
+                    AB_Pos: 4, AB_Neg: 1,
+                    O_Pos: 6, O_Neg: 2
+                }
+            },
+            {
+                name: "Riverside Clinic",
+                blood: {
+                    A_Pos: 14, A_Neg: 4,
+                    B_Pos: 5, B_Neg: 2,
+                    AB_Pos: 2, AB_Neg: 1,
+                    O_Pos: 11, O_Neg: 4
+                }
+            }
+        ];
+
+        const carouselTrack = document.getElementById("carousel-track");
+        const itemsPerSlide = 3;
+        let currentSlide = 0;
+
+        function createSlides() {
+            let slides = [];
+            for (let i = 0; i < hospitals.length; i += itemsPerSlide) {
+                const slide = document.createElement("div");
+                slide.className = "carousel-slide";
+                for (let j = 0; j < itemsPerSlide; j++) {
+                    const hospital = hospitals[i + j];
+                    if (hospital) {
+                        const hospitalCard = document.createElement("div");
+                        hospitalCard.className = "hospital-card";
+                        hospitalCard.innerHTML = `
+                            <h2>${hospital.name}</h2>
+                            <div class="blood-info">
+                                <span>A+ : ${hospital.blood.A_Pos} litres</span>
+                                <span>A- : ${hospital.blood.A_Neg} litres</span>
+                                <span>B+ : ${hospital.blood.B_Pos} litres</span>
+                                <span>B- : ${hospital.blood.B_Neg} litres</span>
+                                <span>AB+ : ${hospital.blood.AB_Pos} litres</span>
+                                <span>AB- : ${hospital.blood.AB_Neg} litres</span>
+                                <span>O+ : ${hospital.blood.O_Pos} litres</span>
+                                <span>O- : ${hospital.blood.O_Neg} litres</span>
+                            </div>
+                        `;
+                        slide.appendChild(hospitalCard);
+                    }
+                }
+                slides.push(slide);
+            }
+            return slides;
+        }
+
+        function initializeCarousel() {
+            const slides = createSlides();
+            slides.forEach(slide => carouselTrack.appendChild(slide));
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const slideWidth = document.querySelector(".carousel-slide").offsetWidth;
+            carouselTrack.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+            } else {
+                currentSlide = Math.ceil(hospitals.length / itemsPerSlide) - 1;
+            }
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            if (currentSlide < Math.ceil(hospitals.length / itemsPerSlide) - 1) {
+                currentSlide++;
+            } else {
+                currentSlide = 0;
+            }
+            updateCarousel();
+        }
+
+        window.addEventListener("resize", updateCarousel);
+
+        // Initialize the carousel when the page loads
+        initializeCarousel();
+    </script>
+
+</body>
+</html>

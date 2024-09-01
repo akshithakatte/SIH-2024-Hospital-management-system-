@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Consultation</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1976d2, #64b5f6);
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite, rotate 10s linear infinite, pulse 3s ease-in-out infinite;
+        }
+
+        .circle1 { width: 200px; height: 200px; top: 10px; left: 10px; }
+        .circle2 { width: 150px; height: 150px; bottom: 10px; right: 10px; }
+        .circle3 { width: 100px; height: 100px; top: 10px; right: 10px; }
+        .circle4 { width: 120px; height: 120px; bottom: 10px; left: 10px; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        .consultation-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .consultation-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .consultation-container h2 {
+            text-align: center;
+            font-size: 2rem;
+            color: #0d47a1;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .doctor-card {
+            background-color: #1565c0;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .doctor-card.selected {
+            background-color: #0d47a1;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            border: 2px solid #64b5f6;
+        }
+
+        .doctor-card.selected::after {
+            content: '✔';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: #64b5f6;
+        }
+
+        .doctor-card h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .doctor-card p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .schedule-container {
+            margin-top: 30px;
+        }
+
+        .schedule-container h3 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .schedule-container input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #1565c0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .button:hover {
+            background-color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+    <div class="circle circle4"></div>
+
+    <div class="consultation-container">
+        <h2>Online Consultation</h2>
+
+        <div class="form-group">
+            <label for="department">Select Department</label>
+            <select id="department" name="department">
+                <option value="">--Select Department--</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <!-- Add more departments as needed -->
+            </select>
+        </div>
+
+        <div id="doctorList"></div>
+
+        <div class="schedule-container">
+            <h3>Schedule Online Consultation</h3>
+            <div class="form-group">
+                <label for="dateTime">Select Date and Time</label>
+                <input type="datetime-local" id="dateTime" name="dateTime">
+            </div>
+            <a href="#" class="button" onclick="scheduleConsultation()">Schedule</a>
+        </div>
+    </div>
+
+    <script>
+        const doctors = {
+            Cardiology: [
+                { name: 'Dr. Alice Johnson', education: 'Harvard Medical School', experience: '10 years' },
+                { name: 'Dr. Bob Brown', education: 'Johns Hopkins University', experience: '8 years' }
+            ],
+            Neurology: [
+                { name: 'Dr. Carol White', education: 'Stanford University', experience: '12 years' },
+                { name: 'Dr. David Green', education: 'University of California', experience: '9 years' }
+            ],
+            Orthopedics: [
+                { name: 'Dr. Eve Black', education: 'Mayo Clinic', experience: '7 years' },
+                { name: 'Dr. Frank Gray', education: 'Cleveland Clinic', experience: '6 years' }
+            ]
+        };
+
+        let selectedDoctor = null;
+
+        document.getElementById('department').addEventListener('change', function () {
+            const department = this.value;
+            const doctorList = document.getElementById('doctorList');
+            doctorList.innerHTML = '';
+
+            if (department && doctors[department]) {
+                doctors[department].forEach(doctor => {
+                    const doctorCard = document.createElement('div');
+                    doctorCard.classList.add('doctor-card');
+                    doctorCard.innerHTML = `
+                        <h3>${doctor.name}</h3>
+                        <p>Education: ${doctor.education}</p>
+                        <p>Experience: ${doctor.experience}</p>
+                    `;
+                    doctorCard.addEventListener('click', function () {
+                        // Unselect previously selected doctor
+                        if (selectedDoctor) {
+                            selectedDoctor.classList.remove('selected');
+                        }
+                        // Select the clicked doctor
+                        doctorCard.classList.add('selected');
+                        selectedDoctor = doctorCard;
+                    });
+                    doctorList.appendChild(doctorCard);
+                });
+            }
+        });
+
+        function scheduleConsultation() {
+            if (selectedDoctor) {
+                alert('Consultation scheduled with ' + selectedDoctor.querySelector('h3').textContent);
+            } else {
+                alert('Please select a doctor first.');
+            }
+        }
+    </script>
+</body>
+</html>

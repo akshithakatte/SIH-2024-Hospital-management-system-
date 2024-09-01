@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOOD BANK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 1s ease-out;
+            background-image: url("images/bb2.webp");
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent the image from repeating */
+           /* Cover the entire page */
+            
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9); /* White background with less transparency */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: scale(0);
+            animation: scaleUp 0.5s forwards;
+        }
+
+        h1 {
+            text-align: center;
+            color: #004d99; /* Dark Blue for headings */
+            animation: colorChange 2s infinite alternate;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        th {
+            background-color: #0056b3; /* Blue for table headers */
+            color: white;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #003d80; /* Darker blue on hover */
+        }
+
+        .button {
+            background-color: #0056b3; /* Blue for buttons */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            background-color: #003d80; /* Darker blue on hover */
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0056b3; /* Blue for focus border */
+            outline: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes colorChange {
+            from {
+                color: #004d99;
+            }
+            to {
+                color: #003d80;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Blood Bank</h1>
+    
+    <!-- Form to add or edit blood records -->
+    <div>
+        <h2>Blood Records</h2>
+        <form id="bloodForm">
+            <input type="hidden" id="recordId">
+            <div class="form-group">
+                <label for="bloodType">Blood Type:</label>
+                <select id="bloodType">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity (ml):</label>
+                <input type="number" id="quantity" required>
+            </div>
+            <button type="button" class="button" onclick="saveRecord()">Save Record</button>
+        </form>
+    </div>
+    
+    <!-- Table to display blood records -->
+    <h2>Available Blood Records</h2>
+    <table id="bloodTable">
+        <thead>
+            <tr>
+                <th>Blood Type</th>
+                <th>Quantity(ml)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Records will be dynamically inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let records = []; // To store blood records
+
+    function saveRecord() {
+        const id = document.getElementById('recordId').value;
+        const bloodType = document.getElementById('bloodType').value;
+        const quantity = document.getElementById('quantity').value;
+
+        if (id) {
+            // Edit existing record
+            records = records.map(record => record.id === id ? { id, bloodType, quantity } : record);
+        } else {
+            // Add new record
+            const newRecord = {
+                id: new Date().getTime().toString(),
+                bloodType,
+                quantity
+            };
+            records.push(newRecord);
+        }
+
+        renderTable();
+        document.getElementById('bloodForm').reset();
+    }
+
+    function deleteRecord(id) {
+        records = records.filter(record => record.id !== id);
+        renderTable();
+    }
+
+    function editRecord(id) {
+        const record = records.find(record => record.id === id);
+        if (record) {
+            document.getElementById('recordId').value = record.id;
+            document.getElementById('bloodType').value = record.bloodType;
+            document.getElementById('quantity').value = record.quantity;
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('bloodTable').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        
+        records.forEach(record => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${record.bloodType}</td>
+                <td>${record.quantity}</td>
+                <td>
+                    <button class="button" onclick="editRecord('${record.id}')">Edit</button>
+                    <button class="button" onclick="deleteRecord('${record.id}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+</script>
+
+</body>
+</html>
